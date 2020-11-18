@@ -108,7 +108,7 @@ class UziSql:
 	def select(table, columns, filters = None, groups = None, having = None, 
 		order = None, limit = None):
 		"""Build a query to select rows from a table. Arguments are:
-		- columns: a tuple of selected columns names.
+		- columns: a string/tuple/list of selected columns names.
 		- filters: a dict of "column = value" pairs. Currently support only
 		inclusive equal conditions. TODO: support more complex conditions.
 		- groups: a tuple of columns names to group by.
@@ -131,11 +131,18 @@ class UziSql:
 		"""
 		# Quote identifiers.
 		table = UziSql.quote(table)
-		if not isinstance(columns, (tuple, list)):
-			raise TypeError('columns must be a tuple or list')
-		elif len(columns) == 0:
-			raise ValueError('columns list cannot be empty')
-		columns = ', '.join(UziSql.quote(columns))
+		if not isinstance(columns, (str, tuple, list)):
+			raise TypeError('columns must be a str or a tuple or a list')
+		elif isinstance(columns, str):
+			if len(columns.strip()) == 0:
+				raise ValueError('column name cannot be empty')
+			else:
+				columns = UziSql.quote(columns)
+		else:
+			if len(columns) == 0:
+				raise ValueError('column list cannot be empty')
+			else:
+				columns = ', '.join(UziSql.quote(columns))
 		# Build the WHERE clause.
 		where = ''
 		if filters is not None:
