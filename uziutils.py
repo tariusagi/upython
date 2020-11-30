@@ -81,7 +81,7 @@ class UziSql:
 			return str(value)
 		elif isinstance(value, str):
 			# For text, return single-quoted string.
-			return f"'{value.strip()}'"
+			return "'" + value.strip().replace("'", "\\'") + "'"
 		elif isinstance(value, datetime):
 			# For date & time, return MySQL date formatted string.
 			return "'" + value.strftime('%Y-%m-%d %H:%M:%S') + "'"
